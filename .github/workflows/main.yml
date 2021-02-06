@@ -1,0 +1,106 @@
+on: push
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 15
+          registry-url: https://registry.npmjs.org/
+      - run: |
+          npm install
+          npm run build
+          cd pkg
+          tar cvzf echo-command-line-parameters-macos.tar.gz echo-command-line-parameters-macos
+          tar cvzf echo-command-line-parameters-linux.tar.gz echo-command-line-parameters-linux
+          tar cvzf echo-command-line-parameters-windows.tar.gz echo-command-line-parameters-windows.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-macos
+          name: echo-command-line-parameters-macos-${{ github.sha }}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-linux
+          name: echo-command-line-parameters-linux-${{ github.sha }}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-windows.exe
+          name: echo-command-line-parameters-windows-${{ github.sha }}.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-macos.tar.gz
+          name: echo-command-line-parameters-macos-${{ github.sha }}.tar.gz
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-linux.tar.gz
+          name: echo-command-line-parameters-linux-${{ github.sha }}.tar.gz
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/echo-command-line-parameters-windows.tar.gz
+          name: echo-command-line-parameters-windows-${{ github.sha }}.tar.gz
+      - run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: tag
+      - uses: actions/create-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-macos
+          asset_name: echo-command-line-parameters-macos-${{ steps.tag.outputs.tag }}
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-linux
+          asset_name: echo-command-line-parameters-linux-${{ steps.tag.outputs.tag }}
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-windows.exe
+          asset_name: echo-command-line-parameters-windows-${{ steps.tag.outputs.tag }}.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-macos.tar.gz
+          asset_name: echo-command-line-parameters-macos-${{ steps.tag.outputs.tag }}.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-linux.tar.gz
+          asset_name: echo-command-line-parameters-linux-${{ steps.tag.outputs.tag }}.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: pkg/echo-command-line-parameters-windows.tar.gz
+          asset_name: echo-command-line-parameters-windows-${{ steps.tag.outputs.tag }}.tar.gz
+          asset_content_type: application/gzip

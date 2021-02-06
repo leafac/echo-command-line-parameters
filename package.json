@@ -1,0 +1,13 @@
+{
+  "name": "echo-command-line-parameters",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "pkg --targets latest-macos,latest-win,latest-linux --out-path pkg ."
+  },
+  "bin": {
+    "echo-command-line-parameters": "index.js"
+  },
+  "devDependencies": {
+    "@leafac/pkg": "^4.4.11"
+  }
+}
