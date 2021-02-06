@@ -14,7 +14,7 @@ jobs:
           cd pkg
           tar cvzf echo-command-line-parameters-macos.tar.gz echo-command-line-parameters-macos
           tar cvzf echo-command-line-parameters-linux.tar.gz echo-command-line-parameters-linux
-          tar cvzf echo-command-line-parameters-windows.tar.gz echo-command-line-parameters-windows.exe
+          tar cvzf echo-command-line-parameters-windows.tar.gz echo-command-line-parameters-win.exe
       - uses: actions/upload-artifact@v2
         with:
           path: pkg/echo-command-line-parameters-macos
@@ -25,7 +25,7 @@ jobs:
           name: echo-command-line-parameters-linux-${{ github.sha }}
       - uses: actions/upload-artifact@v2
         with:
-          path: pkg/echo-command-line-parameters-windows.exe
+          path: pkg/echo-command-line-parameters-win.exe
           name: echo-command-line-parameters-windows-${{ github.sha }}.exe
       - uses: actions/upload-artifact@v2
         with:
@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: pkg/echo-command-line-parameters-windows.exe
+          asset_path: pkg/echo-command-line-parameters-win.exe
           asset_name: echo-command-line-parameters-windows-${{ steps.tag.outputs.tag }}.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       - uses: actions/upload-release-asset@v1
